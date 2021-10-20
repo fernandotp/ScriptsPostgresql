@@ -11,7 +11,7 @@ if [ -n "$1" ]; then # If first parameter passed
 	today=`date '+%Y_%m_%d__%H_%M_%S'`;
 	nombreBackup="backup_postgresql_$1_`date '+%Y-%m-%d_%H:%M:%S'`.sql"
 
-	if [ "$(ls $~/backups)" ]
+	if [ "$(ls ~/backups)" ]
 	then
 	
 		echo -e '\nTamaño backup anterior:'
@@ -19,10 +19,10 @@ if [ -n "$1" ]; then # If first parameter passed
 		du -sh $ultimoBackup
 		#psql -U $1 -d $2 -c "SELECT pg_database.datname, pg_size_pretty(pg_database_size(pg_database.datname)) AS SIZE FROM pg_database WHERE pg_database.datname='$2';"
 	else
-		echo "Este es el primer backup de esta base de datos"
+		echo -e "\nEste es el primer backup de esta base de datos"
 	fi
 
-	pg_dumpall -U $1 > ~/backups/$nombreBackup
+	#pg_dumpall -U $1 > ~/backups/$nombreBackup
 	echo -e '\nTamaño nuevo backup:'
 	du -sh  ~/backups/$nombreBackup
 	echo ''
