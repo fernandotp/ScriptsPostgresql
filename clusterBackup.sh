@@ -15,17 +15,30 @@ if [ -n "$1" ]; then # If first parameter passed
 	then
 	
 		echo -e '\nTamaño backup anterior:'
-		ultimoBackup=$(find ~/backups/ -type f -mtime -5 | tail -1)
+		ultimoBackup=$(ls ~/bakups | grep $1 | find ~/backups/ -type f -mtime -5 | tail -1)
 		du -sh $ultimoBackup
 		#psql -U $1 -d $2 -c "SELECT pg_database.datname, pg_size_pretty(pg_database_size(pg_database.datname)) AS SIZE FROM pg_database WHERE pg_database.datname='$2';"
 	else
-		echo -e "\nEste es el primer backup de esta base de datos"
+		echo -e "\nEste es el primer backup que se realiza de $1"
 	fi
 
 	#pg_dumpall -U $1 > ~/backups/$nombreBackup
-	echo -e '\nTamaño nuevo backup:'
-	du -sh  ~/backups/$nombreBackup
-	echo ''
+
+	FICHERO=~/backups/$nombreBackup	
+	cd ~/backups	
+
+	if [ -f $nombreBackup ]
+	then
+		
+		su postgres		
+		pg_dumpall -U $1 > ~/backups/$nombreBackup
+		echo -e '\nTamaño nuevo backup:'
+		du -sh  ~/backups/$nombreBackup
+		echo ''
+   		
+	else
+   		echo -e "\nError. No se pudo realizar el bakup de $1\n"
+	fi
 
 else
 
