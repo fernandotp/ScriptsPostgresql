@@ -1,3 +1,4 @@
 #!/bin/bash
 
-ps -ef | grep postmaster
+echo -e "\n---------- Procesos activos de postgres ----------"
+ps -ef | grep postmaster | grep postgres/
