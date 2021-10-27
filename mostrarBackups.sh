@@ -21,7 +21,7 @@ if [ -n "$1" ]; then # If first parameter passed
 			tamanoUltimoBck=$(du -sh $ultimoBackup)
 			echo -e "\nTamaño del ultimo backup de $1: $tamanoUltimoBck\n"
 		else
-			echo "No existe ningun backup de $1"
+			echo -e "\nNo existe ningun backup de $1\n"
 		fi
 	else	
 
