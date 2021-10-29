@@ -1,8 +1,14 @@
 #!/bin/bash
 
-j=0
 declare -A nombresBBDD 
+
+dirBackups=~/backups
+
+obtenerNombresBBDD(){
+echo "hola"
 sudo -u postgres psql -c "SELECT datname FROM pg_database WHERE datistemplate = false;"| while read -a Datos_Consulta ; do
+
+j=0
 
 DATO1=${Datos_Consulta}
 if [[ ("$DATO1" != "datname" && "$DATO1" != "-----------------" && "${DATO1:0:1}" != "(" && "$DATO1" != "")]]; then
@@ -21,8 +27,10 @@ if [[ ("$DATO1" != "datname" && "$DATO1" != "-----------------" && "${DATO1:0:1}
 	nombresBBDD[$j]=$DATO1
 fi
 done <temp.txt
+}
 
-dirBackups=~/backups
+
+obtenerNombresBBDD
 
 if [ -n "$1" ]; then # If first parameter passed
 
@@ -58,3 +66,5 @@ else
 
 fi
 rm temp.txt
+
+
