@@ -7,7 +7,7 @@
 dirBackups=~/backups
 
 if [[ (-n "$1") && (-n "$2")]];
- then # If first parameter passed
+then # If first parameter passed
 	echo -e "\nRealizando backup de $2..."
 	today=`date '+%Y_%m_%d__%H_%M_%S'`;
 	nombreBackup="backup_postgresql_$2_`date '+%Y-%m-%d_%H:%M:%S'`.sql"
@@ -18,40 +18,39 @@ if [[ (-n "$1") && (-n "$2")]];
 
 		#------------REALIZAR BACKUP--------------		
 	
-	pg_dump -U $1 $2 > ~/backups/$nombreBackup
-
-	FICHERO=~/backups/$nombreBackup	
-	cd ~/backups
-
-	if [ -f $nombreBackup ]
+	ultimoBackup=$(find ~/backups/ -name "*_$2_*" -type f -mtime -9 | tail -1)
+	tamanoUltimoBck=$(du -sh $ultimoBackup)	
+	pg_dump -U $1 -d $2 > $dirBackups/$nombreBackup
+	tamanoNuevoBck=$(du -sh  $dirBackups/$nombreBackup)	
+	bckVacio=${tamanoNuevoBck:0:1}
+	
+	if [ $bckVacio -eq 0 ]
 	then
-		if [ "$(ls $dirBackups)" ]
+		echo -e "\nError. No se pudo realizar el backup de $2\n"
+		rm $dirBackups/$nombreBackup	
+	else
+		FICHERO=~/backups/$nombreBackup	
+		cd ~/backups
+
+		if [ -f $nombreBackup ]
 		then
-
-			ultimoBackup=$(find ~/backups/ -name "*_$2_*" -type f -mtime -9 | tail -1)
-
-			if [ "$ultimoBackup" ]
+			if [ "$(ls $dirBackups)" ]
 			then
-				tamanoUltimoBck=$(du -sh $ultimoBackup)
-				echo -e "\nTamaño del ultimo backup de $2: $tamanoUltimoBck\n"
-			fi	
-			
+				if [ "$ultimoBackup" ]
+				then
+					echo -e "\nTamaño del ultimo backup de $2: $tamanoUltimoBck\n"
+				fi				
+			fi
+			echo -e "\nTamaño del nuevo backup de $2: $tamanoNuevoBck"
+			echo ""
+		else
+ 			echo -e "\nERROR. No se pudo realizar el bakup de $2\n"
 		fi
 
-		echo -e "\nTamaño del nuevo backup:"
-		du -sh  $dirBackups/$nombreBackup
-		echo ""
-   		
-	else
- 		echo -e "\nERROR. No se pudo realizar el bakup de $2\n"
+		#psql -U $1 -d $2 -c "SELECT pg_database.datname, pg_size_pretty(pg_database_size(pg_database.datname)) AS SIZE FROM pg_database WHERE pg_database.datname='$2';"
+
+		#pg_dumpall -U $1 > ~/backups/$nombreBackup
 	fi
-
-	#psql -U $1 -d $2 -c "SELECT pg_database.datname, pg_size_pretty(pg_database_size(pg_database.datname)) AS SIZE FROM pg_database WHERE pg_database.datname='$2';"
-
-	#pg_dumpall -U $1 > ~/backups/$nombreBackup
-
 else
-
-	echo -e "\nSe debe especificar el usuario y la base de datos específica.\nFormato: ./backupBBDD.sh -'usuario de Postgresql' -'Base de datos'\n"
-
+	echo -e "\nSe debe especificar el usuario y la base de datos.\nFormato: ./backupBBDD.sh -'usuario de Postgresql' -'Base de datos'\n"
 fi

@@ -5,45 +5,42 @@ declare -A nombresBBDD
 dirBackups=~/backups
 
 obtenerNombresBBDD(){
-echo "hola"
-sudo -u postgres psql -c "SELECT datname FROM pg_database WHERE datistemplate = false;"| while read -a Datos_Consulta ; do
+	sudo -u postgres psql -c "SELECT datname FROM pg_database WHERE datistemplate = false;"| while read -a Datos_Consulta ; do
 
-j=0
+		j=0
 
-DATO1=${Datos_Consulta}
-if [[ ("$DATO1" != "datname" && "$DATO1" != "-----------------" && "${DATO1:0:1}" != "(" && "$DATO1" != "")]]; then
-	let j=j+1
-	nombresBBDD[$j]=$DATO1
-	echo $DATO1 >> temp.txt
-fi
-done
+		DATO1=${Datos_Consulta}
+		if [[ ("$DATO1" != "datname" && "$DATO1" != "-----------------" && "${DATO1:0:1}" != "(" && "$DATO1" != "")]]; then
+			let j=j+1
+			nombresBBDD[$j]=$DATO1
+			echo $DATO1 >> temp.txt
+		fi
+	done
 
-while read -a Datos_Consulta;
-do
-
-DATO1=${Datos_Consulta}
-if [[ ("$DATO1" != "datname" && "$DATO1" != "-----------------" && "${DATO1:0:1}" != "(" && "$DATO1" != "")]]; then
-	let j=j+1
-	nombresBBDD[$j]=$DATO1
-fi
-done <temp.txt
+	while read -a Datos_Consulta;
+	do
+		DATO1=${Datos_Consulta}
+		if [[ ("$DATO1" != "datname" && "$DATO1" != "-----------------" && "${DATO1:0:1}" != "(" && "$DATO1" != "")]]; then
+			let j=j+1
+			nombresBBDD[$j]=$DATO1
+		fi
+	done <temp.txt
 }
 
 
 obtenerNombresBBDD
 
-if [ -n "$1" ]; then # If first parameter passed
+#if [ -n "$1" ]; then # If first parameter passed
 
-	if [ "$(ls ~/backups)" ]
+	if [ "$(ls $dirBackups)" ]
 	then
 		echo -e "\n---------- Espacio file system backups ----------"
-		fileSystemBackups=$(df -T ~/backups)
+		fileSystemBackups=$(df -T $dirBackups)
 		echo "$fileSystemBackups"
-
 		
 		for i in ${nombresBBDD[@]}
 		do	
-			ultimoBackup=$(find ~/backups/ -name "*$i*" -type f -mtime -9 | tail -1)
+			ultimoBackup=$(find $dirBackups -name "*$i*" -type f -mtime -9 | tail -1)
 
 			if [ "$ultimoBackup" ]
 			then
@@ -54,17 +51,14 @@ if [ -n "$1" ]; then # If first parameter passed
 			fi
 		done
 	else	
-		echo "El directorio de backups está vacio"
+		echo -e "\nEl directorio de backups está vacio\n"
 
 	fi
 
-	FICHERO=~/backups/$nombreBackup	
-	
-else
-
-	echo -e '\nSe debe especificar la BBDD\n'
-
-fi
+	FICHERO=~/backups/$nombreBackup		
+#else
+#	echo -e '\nSe debe especificar el usuario \n'
+#fi
 rm temp.txt
 
 
