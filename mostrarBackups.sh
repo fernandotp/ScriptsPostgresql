@@ -28,10 +28,15 @@ obtenerNombresBBDD(){
 }
 
 
-obtenerNombresBBDD
 
-#if [ -n "$1" ]; then # If first parameter passed
 
+#if [ -n "$1" ]; then
+ 
+postgresActivo=$(ps -ef | grep postmaster | grep postgres/)
+
+if [ "$postgresActivo" ]
+then
+	obtenerNombresBBDD
 	if [ "$(ls $dirBackups)" ]
 	then
 		echo -e "\n---------- Espacio file system backups ----------"
@@ -40,7 +45,7 @@ obtenerNombresBBDD
 		
 		for i in ${nombresBBDD[@]}
 		do	
-			ultimoBackup=$(find $dirBackups -name "*$i*" -type f -mtime -9 | tail -1)
+			ultimoBackup=$(find $dirBackups -name "*$i*" -type f -mtime -9 | grep _$i_ | tail -1)
 
 			if [ "$ultimoBackup" ]
 			then
@@ -54,11 +59,13 @@ obtenerNombresBBDD
 		echo -e "\nEl directorio de backups está vacio\n"
 
 	fi
-
 	FICHERO=~/backups/$nombreBackup		
-#else
-#	echo -e '\nSe debe especificar el usuario \n'
-#fi
-rm temp.txt
+	rm temp.txt
+else
+	echo -e "\nEl servicio de postgres está inactivo\n"
+fi
 
+#else
+#	echo -e "\nSe debe especificar el usuario \n"
+#fi
 
