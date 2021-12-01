@@ -10,7 +10,7 @@ if [[ (-n "$1") && (-n "$2")]];
 then # If first parameter passed
 	echo -e "\nRealizando backup de $2..."
 	today=`date '+%Y_%m_%d__%H_%M_%S'`;
-	nombreBackup="backup_postgresql_$2_`date '+%Y-%m-%d_%H:%M:%S'`.sql"
+	nombreBackup="backup_$2_`date '+%Y-%m-%d_%H:%M:%S'`.sql"
 	
 	#echo -e "\n---------- Espacio file system backups ----------"
 	#fileSystemBackups=$(df -T ~/backups)
