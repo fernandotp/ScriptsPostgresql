@@ -4,7 +4,7 @@
 # The second arg ($2) is the database to backup and is included in the file name.
 # $(date +"%Y_%m_%d") includes the current system date into the actual file name.
 
-dirBackups=/home/fernando/scriptsPruebasPostgres
+dirBackups=/home/fernando/backups
 
 if [[ (-n "$1") && (-n "$2")]];
 then # If first parameter passed

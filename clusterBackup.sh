@@ -3,7 +3,7 @@
 # The first arg ($1) is the database user to connect with.
 # $(date +"%Y_%m_%d") includes the current system date into the actual file name.
 
-dirBackups=~/backups
+dirBackups=/home/fernando/clusterBackups
 
 if [ -n "$1" ];
 then # If first parameter passed
@@ -17,8 +17,8 @@ then # If first parameter passed
 
 		#------------REALIZAR BACKUP--------------		
 	
-	ultimoBackup=$(find ~/backups/ -name "*_$1Cluster_*" -type f -mtime -9 | tail -1)
-	tamanoUltimoBck=$(du -sh $ultimoBackup)	
+	ultimoBackup=$(find $dirBackups -name "*_$1Cluster_*" -type f -mtime -9 | tail -1)
+	tamanoUltimoBck=$(du -sh $ultimoBackup)
 	pg_dumpall -U $1 > $dirBackups/$nombreBackup
 	tamanoNuevoBck=$(du -sh  $dirBackups/$nombreBackup)	
 	bckVacio=${tamanoNuevoBck:0:1}
@@ -28,10 +28,10 @@ then # If first parameter passed
 		echo -e "\nError. No se pudo realizar el backup de $1\n"
 		rm $dirBackups/$nombreBackup	
 	else
-		FICHERO=~/backups/$nombreBackup	
-		cd ~/backups
+		FICHERO=$dirBackups/$nombreBackup	
+		cd $dirBakups
 
-		if [ -f $nombreBackup ]
+		if [ -f $dirBackups/$nombreBackup ]
 		then
 			if [ "$(ls $dirBackups)" ]
 			then
@@ -43,7 +43,7 @@ then # If first parameter passed
 			echo -e "\nTamaño del nuevo backup de $1: $tamanoNuevoBck"
 			echo ""
 		else
- 			echo -e "\nERROR. No se pudo realizar el bakup de $1\n"
+ 			echo -e "\nERROR. No se pudo realizar el backup de $1\n"
 		fi
 
 		#psql -U $1 -d $2 -c "SELECT pg_database.datname, pg_size_pretty(pg_database_size(pg_database.datname)) AS SIZE FROM pg_database WHERE pg_database.datname='$2';"
