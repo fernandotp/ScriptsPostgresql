@@ -2,7 +2,7 @@
 
 declare -A nombresBBDD 
 
-dirBackups=~/backups
+dirBackups=/home/fernando
 
 obtenerNombresBBDD(){
 	sudo -u postgres psql -c "SELECT datname FROM pg_database WHERE datistemplate = false;"| while read -a Datos_Consulta ; do
@@ -31,15 +31,16 @@ obtenerNombresBBDD(){
 
 
 #if [ -n "$1" ]; then
- 
-postgresActivo=$(ps -ef | grep postmaster | grep postgres/)
+
+postgresActivo=$(ps -ef | grep postgres)
+#postgresActivo=$(ps -ef | grep postmaster | grep postgres/)
 
 if [ "$postgresActivo" ]
 then
 	obtenerNombresBBDD
 	if [ "$(ls $dirBackups)" ]
 	then
-		echo -e "\n---------- Espacio file system backups ----------"
+		echo -e "\n--------------- Espacio file system backups ---------------"
 		fileSystemBackups=$(df -T $dirBackups)
 		echo "$fileSystemBackups"
 		
@@ -59,7 +60,7 @@ then
 		echo -e "\nEl directorio de backups está vacio\n"
 
 	fi
-	FICHERO=~/backups/$nombreBackup		
+	FICHERO=$dirBackups$nombreBackup		
 	rm temp.txt
 else
 	echo -e "\nEl servicio de postgres está inactivo\n"
