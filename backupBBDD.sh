@@ -4,7 +4,7 @@
 # The second arg ($2) is the database to backup and is included in the file name.
 # $(date +"%Y_%m_%d") includes the current system date into the actual file name.
 
-dirBackups=~/backups
+dirBackups=/home/fernando/scriptsPruebasPostgres
 
 if [[ (-n "$1") && (-n "$2")]];
 then # If first parameter passed
@@ -18,9 +18,9 @@ then # If first parameter passed
 
 		#------------REALIZAR BACKUP--------------		
 	
-	ultimoBackup=$(find ~/backups/ -name "*_$2_*" -type f -mtime -9 | tail -1)
+	ultimoBackup=$(find $dirBackups -name "*_$2_*" -type f -mtime -9 | tail -1)
 	tamanoUltimoBck=$(du -sh $ultimoBackup)	
-	pg_dump -U $1 -d $2 > $dirBackups/$nombreBackup
+	pg_dump -h localhost -U $1 -d $2 > $dirBackups/$nombreBackup
 	tamanoNuevoBck=$(du -sh  $dirBackups/$nombreBackup)	
 	bckVacio=${tamanoNuevoBck:0:1}
 	
@@ -29,8 +29,8 @@ then # If first parameter passed
 		echo -e "\nError. No se pudo realizar el backup de $2\n"
 		rm $dirBackups/$nombreBackup	
 	else
-		FICHERO=~/backups/$nombreBackup	
-		cd ~/backups
+		FICHERO=$dirBackups/$nombreBackup	
+		cd  $dirBackups
 
 		if [ -f $nombreBackup ]
 		then
