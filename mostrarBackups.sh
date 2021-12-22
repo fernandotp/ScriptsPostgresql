@@ -8,9 +8,8 @@ obtenerNombresBBDD(){
 	sudo -u postgres psql -c "SELECT datname FROM pg_database WHERE datistemplate = false;"| while read -a Datos_Consulta ; do
 
 		j=0
-
 		DATO1=${Datos_Consulta}
-		if [[ ("$DATO1" != "datname" && "$DATO1" != "-----------------" && "${DATO1:0:1}" != "(" && "$DATO1" != "")]]; then
+		if [[ ("$DATO1" != "datname" && "${DATO1:1:2}" != "--" && "${DATO1:0:1}" != "(" && "$DATO1" != "")]]; then
 			let j=j+1
 			nombresBBDD[$j]=$DATO1
 			echo $DATO1 >> temp.txt
@@ -20,7 +19,7 @@ obtenerNombresBBDD(){
 	while read -a Datos_Consulta;
 	do
 		DATO1=${Datos_Consulta}
-		if [[ ("$DATO1" != "datname" && "$DATO1" != "-----------------" && "${DATO1:0:1}" != "(" && "$DATO1" != "")]]; then
+		if [[ ("$DATO1" != "datname" && "${DATO1:1:2}" != "--" && "${DATO1:0:1}" != "(" && "$DATO1" != "")]]; then
 			let j=j+1
 			nombresBBDD[$j]=$DATO1
 		fi
@@ -32,7 +31,7 @@ obtenerNombresBBDD(){
 
 #if [ -n "$1" ]; then
 
-postgresActivo=$(ps -ef | grep postgres)
+postgresActivo=$(ps -ef | grep postgresql | grep config_file)
 #postgresActivo=$(ps -ef | grep postmaster | grep postgres/)
 
 if [ "$postgresActivo" ]
