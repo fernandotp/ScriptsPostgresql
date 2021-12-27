@@ -42,6 +42,8 @@ then # If first parameter passed
 			fi
 			echo -e "\nTamaño del nuevo backup de $1: $tamanoNuevoBck"
 			echo ""
+			df -h $dirBackups
+			echo ""
 		else
  			echo -e "\nERROR. No se pudo realizar el backup de $1\n"
 		fi
