@@ -1,8 +1,7 @@
 #!/bin/bash
 
-declare -A nombresBBDD 
-
-dirBackups=/home/fernando
+declare -A nombresBBDD
+dirBackups=/home/fernando/backups
 
 obtenerNombresBBDD(){
 	sudo -u postgres psql -c "SELECT datname FROM pg_database WHERE datistemplate = false;"| while read -a Datos_Consulta ; do
@@ -26,11 +25,6 @@ obtenerNombresBBDD(){
 	done <temp.txt
 }
 
-
-
-
-#if [ -n "$1" ]; then
-
 postgresActivo=$(ps -ef | grep postgresql | grep config_file)
 #postgresActivo=$(ps -ef | grep postmaster | grep postgres/)
 
@@ -42,10 +36,10 @@ then
 		echo -e "\n--------------- Espacio file system backups ---------------"
 		fileSystemBackups=$(df -T $dirBackups)
 		echo "$fileSystemBackups"
-		
+
 		for i in ${nombresBBDD[@]}
-		do	
-			ultimoBackup=$(find $dirBackups -name "*$i*" -type f -mtime -9 | grep _$i_ | tail -1)
+		do
+			ultimoBackup=$(find $dirBackups -name "*$i*" -type f | grep _$i_ | tail -1)
 
 			if [ "$ultimoBackup" ]
 			then
@@ -55,17 +49,14 @@ then
 				echo -e "\nNo existe ningun backup de $i\n"
 			fi
 		done
-	else	
+	else
 		echo -e "\nEl directorio de backups está vacio\n"
-
 	fi
-	FICHERO=$dirBackups$nombreBackup		
+	FICHERO=$dirBackups$nombreBackup
+	./prueba.sh $nombresBBDD
 	rm temp.txt
 else
 	echo -e "\nEl servicio de postgres está inactivo\n"
 fi
 
-#else
-#	echo -e "\nSe debe especificar el usuario \n"
-#fi
 
