@@ -1,6 +1,6 @@
 #!/bin/bash
-# This script performs a pg_dumpall, saving the file the specified dir.
-# The first arg ($1) is the database user to connect with.
+# Este script realiza un pg_dumpall y lo guarda en el directorio especificado.
+# El argumento que se le pasa es el usuario con el que se realiza el backup
 # $(date +"%Y_%m_%d") includes the current system date into the actual file name.
 
 dirBackups=/home/fernando/clusterBackups
@@ -10,25 +10,21 @@ then # If first parameter passed
 	echo -e "\nRealizando backup de $1..."
 	today=`date '+%Y_%m_%d__%H_%M_%S'`;
 	nombreBackup="backup_postgresql_$1Cluster_`date '+%Y-%m-%d_%H:%M:%S'`.sql"
-	
-	#echo -e "\n---------- Espacio file system backups ----------"
-	#fileSystemBackups=$(df -T ~/backups)
-	#echo -e "$fileSystemBackups"
 
-		#------------REALIZAR BACKUP--------------		
-	
+		#------------REALIZAR BACKUP--------------
+
 	ultimoBackup=$(find $dirBackups -name "*_$1Cluster_*" -type f -mtime -9 | tail -1)
 	tamanoUltimoBck=$(du -sh $ultimoBackup)
 	pg_dumpall -U $1 > $dirBackups/$nombreBackup
-	tamanoNuevoBck=$(du -sh  $dirBackups/$nombreBackup)	
+	tamanoNuevoBck=$(du -sh  $dirBackups/$nombreBackup)
 	bckVacio=${tamanoNuevoBck:0:1}
-	
+
 	if [ $bckVacio -eq 0 ]
 	then
 		echo -e "\nError. No se pudo realizar el backup de $1\n"
-		rm $dirBackups/$nombreBackup	
+		rm $dirBackups/$nombreBackup
 	else
-		FICHERO=$dirBackups/$nombreBackup	
+		FICHERO=$dirBackups/$nombreBackup
 		cd $dirBakups
 
 		if [ -f $dirBackups/$nombreBackup ]
@@ -38,10 +34,11 @@ then # If first parameter passed
 				if [ "$ultimoBackup" ]
 				then
 					echo -e "\nTamaño del ultimo backup de $1: $tamanoUltimoBck\n"
-				fi				
+				fi
 			fi
 			echo -e "\nTamaño del nuevo backup de $1: $tamanoNuevoBck"
 			echo ""
+			echo -e "\n--------------- Espacio file system backups ---------------"
 			df -h $dirBackups
 			echo ""
 		else

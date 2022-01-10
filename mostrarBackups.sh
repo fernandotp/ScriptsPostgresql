@@ -53,7 +53,7 @@ then
 		echo -e "\nEl directorio de backups está vacio\n"
 	fi
 	FICHERO=$dirBackups$nombreBackup
-	./prueba.sh $nombresBBDD
+	./borrarAntiguosBackups.sh $nombresBBDD
 	rm temp.txt
 else
 	echo -e "\nEl servicio de postgres está inactivo\n"
