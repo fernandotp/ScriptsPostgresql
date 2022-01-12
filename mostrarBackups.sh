@@ -1,7 +1,7 @@
 #!/bin/bash
 
 declare -A nombresBBDD
-dirBackups=/home/fernando/backups
+DIRBACKUPS=/home/fernando/backups
 
 obtenerNombresBBDD(){
 	sudo -u postgres psql -c "SELECT datname FROM pg_database WHERE datistemplate = false;"| while read -a Datos_Consulta ; do
@@ -31,15 +31,15 @@ postgresActivo=$(ps -ef | grep postgresql | grep config_file)
 if [ "$postgresActivo" ]
 then
 	obtenerNombresBBDD
-	if [ "$(ls $dirBackups)" ]
+	if [ "$(ls $DIRBACKUPS)" ]
 	then
 		echo -e "\n--------------- Espacio file system backups ---------------"
-		fileSystemBackups=$(df -T $dirBackups)
+		fileSystemBackups=$(df -T $DIRBACKUPS)
 		echo "$fileSystemBackups"
 
 		for i in ${nombresBBDD[@]}
 		do
-			ultimoBackup=$(find $dirBackups -name "*$i*" -type f | grep _$i_ | tail -1)
+			ultimoBackup=$(find $DIRBACKUPS -name "*$i*" -type f | grep _$i_ | tail -1)
 
 			if [ "$ultimoBackup" ]
 			then
@@ -52,7 +52,6 @@ then
 	else
 		echo -e "\nEl directorio de backups está vacio\n"
 	fi
-	FICHERO=$dirBackups$nombreBackup
 	./borrarAntiguosBackups.sh $nombresBBDD
 	rm temp.txt
 else

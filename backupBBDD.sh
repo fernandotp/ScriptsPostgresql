@@ -1,10 +1,9 @@
 #!/bin/bash
-# This script performs a pg_dump, saving the file the specified dir.
-# The first arg ($1) is the database user to connect with.
-# The second arg ($2) is the database to backup and is included in the file name.
-# $(date +"%Y_%m_%d") includes the current system date into the actual file name.
+# Este script realiza un pg_dump, guardando el backup en el directorio especificado. 
+# El primer argumento ($1) es el usuario de postgresql con ek que nos conectamos.
+# El segundo argumento ($2) es la base de datos de la que se realiza el backup.
 
-dirBackups=/home/fernando/backups
+DIRBACKUPS=/root/backups/postgresql
 
 if [[ (-n "$1") && (-n "$2")]];
 then # If first parameter passed
@@ -15,23 +14,23 @@ then # If first parameter passed
 
 		#------------REALIZAR BACKUP--------------
 
-	ultimoBackup=$(find $dirBackups -name "*_$2_*" -type f -mtime -9 | tail -1)
+	ultimoBackup=$(find $DIRBACKUPS -name "*_$2_*" -type f -mtime -9 | tail -1)
 	tamanoUltimoBck=$(du -sh $ultimoBackup)
-	pg_dump -h localhost -U $1 -d $2 > $dirBackups/$nombreBackup
-	tamanoNuevoBck=$(du -sh  $dirBackups/$nombreBackup)
+	pg_dump -h localhost -U $1 -d $2 > $DIRBACKUPS/$nombreBackup
+	tamanoNuevoBck=$(du -sh  $DIRBACKUPS/$nombreBackup)
 	bckVacio=${tamanoNuevoBck:0:1}
 
 	if [ $bckVacio -eq 0 ]
 	then
 		echo -e "\nError. No se pudo realizar el backup de $2\n"
-		rm $dirBackups/$nombreBackup
+		rm $DIRBACKUPS/$nombreBackup
 	else
-		FICHERO=$dirBackups/$nombreBackup
-		cd  $dirBackups
+		FICHERO=$DIRBACKUPS/$nombreBackup
+		cd  $DIRBACKUPS
 
 		if [ -f $nombreBackup ]
 		then
-			if [ "$(ls $dirBackups)" ]
+			if [ "$(ls $DIRBACKUPS)" ]
 			then
 				if [ "$ultimoBackup" ]
 				then
@@ -41,7 +40,7 @@ then # If first parameter passed
 			echo -e "\nTamaño del nuevo backup de $2: $tamanoNuevoBck"
 			echo ""
 			echo -e "\n--------------- Espacio file system backups ---------------"
-			df -h $dirBackups
+			df -h $DIRBACKUPS
 			echo ""
 		else
  			echo -e "\nERROR. No se pudo realizar el bakup de $2\n"
