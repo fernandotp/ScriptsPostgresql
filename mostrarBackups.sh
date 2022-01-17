@@ -31,6 +31,7 @@ postgresActivo=$(ps -ef | grep postgresql | grep config_file)
 if [ "$postgresActivo" ]
 then
 	obtenerNombresBBDD
+	[ ! -d "${DIRBACKUPS}" ] && mkdir -p "${DIRBACKUPS}"
 	if [ "$(ls $DIRBACKUPS)" ]
 	then
 		echo -e "\n--------------- Espacio file system backups ---------------"
