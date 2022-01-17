@@ -1,6 +1,6 @@
 #!/bin/bash
 # Este script realiza un pg_dump, guardando el backup en el directorio especificado. 
-# El primer argumento ($1) es el usuario de postgresql con ek que nos conectamos.
+# El primer argumento ($1) es el usuario de postgresql con el que nos conectamos.
 # El segundo argumento ($2) es la base de datos de la que se realiza el backup.
 
 DIRBACKUPS=/root/backups/postgresql
@@ -14,6 +14,7 @@ then # If first parameter passed
 
 		#------------REALIZAR BACKUP--------------
 
+	[ ! -d "${DIRBACKUPS}" ] && mkdir -p "${DIRBACKUPS}"
 	ultimoBackup=$(find $DIRBACKUPS -name "*_$2_*" -type f -mtime -9 | tail -1)
 	tamanoUltimoBck=$(du -sh $ultimoBackup)
 	pg_dump -h localhost -U $1 -d $2 > $DIRBACKUPS/$nombreBackup

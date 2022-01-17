@@ -2,7 +2,7 @@
 # Este script realiza un pg_dumpall y lo guarda en el directorio especificado.
 # El argumento que se le pasa es ($1) el usuario con el que se realiza el backup
 
-DIRBACKUPS=/root/backups/postgresql
+DIRBACKUPS=/root/clusterBackups/postgresql
 
 if [ -n "$1" ];
 then # If first parameter passed
@@ -12,6 +12,7 @@ then # If first parameter passed
 
 		#------------REALIZAR BACKUP--------------
 
+	[ ! -d "${DIRBACKUPS}" ] && mkdir -p "${DIRBACKUPS}"
 	ultimoBackup=$(find $DIRBACKUPS -name "*_$1Cluster_*" -type f -mtime -9 | tail -1)
 	tamanoUltimoBck=$(du -sh $ultimoBackup)
 	pg_dumpall -U $1 > $DIRBACKUPS/$nombreBackup
