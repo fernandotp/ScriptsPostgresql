@@ -5,7 +5,7 @@
 DIRBACKUPS=/root/clusterBackups/postgresql
 
 if [ -n "$1" ];
-then # If first parameter passed
+then 
 	echo -e "\nRealizando backup de $1..."
 	today=`date '+%Y_%m_%d__%H_%M_%S'`;
 	nombreBackup="backup_postgresql_$1Cluster_`date '+%Y-%m-%d_%H:%M:%S'`.sql"
@@ -15,6 +15,7 @@ then # If first parameter passed
 	[ ! -d "${DIRBACKUPS}" ] && mkdir -p "${DIRBACKUPS}"
 	ultimoBackup=$(find $DIRBACKUPS -name "*_$1Cluster_*" -type f -mtime -9 | tail -1)
 	tamanoUltimoBck=$(du -sh $ultimoBackup)
+	espacioSistemaPrebck=$(df -h $DIRBACKUPS)
 	pg_dumpall -U $1 > $DIRBACKUPS/$nombreBackup
 	tamanoNuevoBck=$(du -sh  $DIRBACKUPS/$nombreBackup)
 	bckVacio=${tamanoNuevoBck:0:1}
@@ -29,6 +30,8 @@ then # If first parameter passed
 
 		if [ -f $DIRBACKUPS/$nombreBackup ]
 		then
+			echo -e "\n--------------- Espacio file system backups ---------------"
+			echo -e "$espacioSistemaPrebck \n"	
 			if [ "$(ls $DIRBACKUPS)" ]
 			then
 				if [ "$ultimoBackup" ]
@@ -44,8 +47,6 @@ then # If first parameter passed
 		else
  			echo -e "\nERROR. No se pudo realizar el backup de $1\n"
 		fi
-
-		#psql -U $1 -d $2 -c "SELECT pg_database.datname, pg_size_pretty(pg_database_size(pg_database.datname)) AS SIZE FROM pg_database WHERE pg_database.datname='$2';"
 
 	fi
 else

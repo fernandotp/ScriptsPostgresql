@@ -30,7 +30,7 @@ then
 		FICHERO=$DIRBACKUPS/$nombreBackup
 		cd  $DIRBACKUPS
 
-		if [ -f $nombreBackup ]
+		if [ -f $DIRBACKUPS/$nombreBackup ]
 		then
 			echo -e "\n--------------- Espacio file system backups ---------------"
 			echo -e "$espacioSistemaPrebck \n"	
