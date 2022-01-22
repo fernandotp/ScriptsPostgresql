@@ -1,9 +1,10 @@
 #!/bin/bash
 
 declare -A nombresBBDD
-DIRBACKUPS=/home/fernando/backups
+DIRBACKUPS=/root/backups/postgresql
 
 obtenerNombresBBDD(){
+	cd /tmp
 	sudo -u postgres psql -c "SELECT datname FROM pg_database WHERE datistemplate = false;"| while read -a Datos_Consulta ; do
 
 		j=0
@@ -53,7 +54,7 @@ then
 	else
 		echo -e "\nEl directorio de backups está vacio\n"
 	fi
-	./borrarAntiguosBackups.sh $nombresBBDD
+	#./borrarAntiguosBackups.sh $nombresBBDD
 	rm temp.txt
 else
 	echo -e "\nEl servicio de postgres está inactivo\n"

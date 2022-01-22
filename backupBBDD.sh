@@ -6,7 +6,7 @@
 DIRBACKUPS=/root/backups/postgresql
 
 if [[ (-n "$1") && (-n "$2")]];
-then # If first parameter passed
+then 
 	echo -e "\nRealizando backup de $2..."
 	today=`date '+%Y_%m_%d__%H_%M_%S'`;
 	nombreBackup="backup_$2_`date '+%Y-%m-%d_%H:%M:%S'`.sql"
@@ -17,6 +17,7 @@ then # If first parameter passed
 	[ ! -d "${DIRBACKUPS}" ] && mkdir -p "${DIRBACKUPS}"
 	ultimoBackup=$(find $DIRBACKUPS -name "*_$2_*" -type f -mtime -9 | tail -1)
 	tamanoUltimoBck=$(du -sh $ultimoBackup)
+	espacioSistemaPrebck=$(df -h $DIRBACKUPS)
 	pg_dump -h localhost -U $1 -d $2 > $DIRBACKUPS/$nombreBackup
 	tamanoNuevoBck=$(du -sh  $DIRBACKUPS/$nombreBackup)
 	bckVacio=${tamanoNuevoBck:0:1}
@@ -31,6 +32,8 @@ then # If first parameter passed
 
 		if [ -f $nombreBackup ]
 		then
+			echo -e "\n--------------- Espacio file system backups ---------------"
+			echo -e "$espacioSistemaPrebck \n"	
 			if [ "$(ls $DIRBACKUPS)" ]
 			then
 				if [ "$ultimoBackup" ]
