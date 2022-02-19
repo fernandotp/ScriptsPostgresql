@@ -6,7 +6,7 @@ declare -A nombresBBDD
 DIRBACKUPS=/root/backups/postgresql
 
 obtenerNombresBBDD(){
-	cd /tmp
+	#cd /tmp
 	sudo -u postgres psql -c "SELECT datname FROM pg_database WHERE datistemplate = false;"| while read -a Datos_Consulta ; do
 
 		j=0

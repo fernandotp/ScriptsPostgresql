@@ -38,7 +38,7 @@ then
 			then
 				if [ "$ultimoBackup" ]
 				then
-					echo -e "\nTamaño del ultimo backup de $2: $tamanoUltimoBck\n"
+					echo -e "\nTamaño del ultimo backup de $2:\n $tamanoUltimoBck\n"
 				fi
 			fi
 			echo -e "\nTamaño del nuevo backup de $2: $tamanoNuevoBck"

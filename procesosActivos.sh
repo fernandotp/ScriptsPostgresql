@@ -7,4 +7,6 @@ then
 	echo $procesosActivos
 else
 	echo -e "\nActualmente no hay ningún proceso de postgres activo\n"
+	systemctl status postgresql-9.6.service
+	echo ""
 fi

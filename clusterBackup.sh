@@ -36,10 +36,12 @@ then
 			then
 				if [ "$ultimoBackup" ]
 				then
-					echo -e "\nTamaño del ultimo backup de $1: $tamanoUltimoBck\n"
+					echo -e "\nTamaño del ultimo backup de $1:\n"
+					echo -e "$tamanoUltimoBck\n"
 				fi
 			fi
-			echo -e "\nTamaño del nuevo backup de $1: $tamanoNuevoBck"
+			echo -e "\nTamaño del nuevo backup de $1:\n"
+			echo -e "$tamanoNuevoBck"
 			echo ""
 			echo -e "\n--------------- Espacio file system backups ---------------"
 			df -h $DIRBACKUPS
